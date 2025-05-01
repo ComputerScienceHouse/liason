@@ -22,7 +22,9 @@ func Connect() *mongo.Client {
 	ctx, cancel := context.WithTimeout(context.TODO(), 10*time.Second)
 	defer cancel()
 
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(dbUri))
+	opts := options.Client().ApplyURI(dbUri)
+	//opts.TLSConfig.InsecureSkipVerify = true
+	client, err := mongo.Connect(ctx, opts)
 	if err != nil {
 		log.Panicln(`error connecting to database`, err)
 	}
