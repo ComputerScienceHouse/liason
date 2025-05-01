@@ -14,8 +14,8 @@ import (
 
 var Client = Connect()
 
-var db = os.Getenv("VOTE_MONGO_DB")
-var dbUri = os.Getenv("VOTE_MONGO_URI")
+var db = os.Getenv("MONGO_DB")
+var dbUri = os.Getenv("MONGO_URI")
 
 func Connect() *mongo.Client {
 
