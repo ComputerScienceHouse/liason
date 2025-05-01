@@ -23,7 +23,6 @@ func Connect() *mongo.Client {
 	defer cancel()
 
 	opts := options.Client().ApplyURI(dbUri)
-	//opts.TLSConfig.InsecureSkipVerify = true
 	client, err := mongo.Connect(ctx, opts)
 	if err != nil {
 		log.Panicln(`error connecting to database`, err)
