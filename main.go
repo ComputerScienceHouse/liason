@@ -149,7 +149,11 @@ func handleDM(event *slackevents.MessageEvent, client *socketmode.Client) {
 	if sendTS == "" {
 		return
 	}
-	client.AddReaction("circle-game", slack.ItemRef{Channel: event.Channel, Timestamp: event.TimeStamp})
+	err := client.AddReaction("circle-game", slack.ItemRef{Channel: event.Channel, Timestamp: event.TimeStamp})
+	if err != nil {
+		log.Println(err)
+		return
+	}
 	client.SendMessage(LiasonChannel, slack.MsgOptionUsername("Concerned Member"), slack.MsgOptionTS(sendTS), slack.MsgOptionText(event.Text, false))
 	//TODO: maybe hash threadTS for privacy?
 }
