@@ -56,9 +56,9 @@ func main() {
 
 	//load API accordingly
 	api := slack.New(botToken, slack.OptionAppLevelToken(appToken))
-	client := socketmode.New(api,
-		socketmode.OptionDebug(true),
-		socketmode.OptionLog(log.New(os.Stdout, "socketmode: ", log.Lshortfile|log.LstdFlags)))
+	client := socketmode.New(api) //,
+	//	socketmode.OptionDebug(true),
+	//	socketmode.OptionLog(log.New(os.Stdout, "socketmode: ", log.Lshortfile|log.LstdFlags)))
 	socketHandler := socketmode.NewSocketmodeHandler(client)
 
 	//handle Slack normal endpoints
@@ -149,6 +149,7 @@ func handleDM(event *slackevents.MessageEvent, client *socketmode.Client) {
 	if sendTS == "" {
 		return
 	}
+	client.AddReaction("circle-game", slack.ItemRef{Channel: event.Channel, Timestamp: event.TimeStamp})
 	client.SendMessage(LiasonChannel, slack.MsgOptionUsername("Concerned Member"), slack.MsgOptionTS(sendTS), slack.MsgOptionText(event.Text, false))
 	//TODO: maybe hash threadTS for privacy?
 }
