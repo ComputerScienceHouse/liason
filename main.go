@@ -143,7 +143,9 @@ func handleEboard(event *slackevents.MessageEvent, client *socketmode.Client) {
 
 func handleDM(event *slackevents.MessageEvent, client *socketmode.Client) {
 	if event.ThreadTimeStamp == "" {
-		client.SendMessage(event.Channel, slack.MsgOptionText("Want to start a new conversation? /start", false))
+		client.SendMessage(event.Channel, slack.MsgOptionText(
+			"Want to start a new conversation? /start _group/subgroups_... _Subject of the conversation_\n"+
+				"Groups/subgroups could be eboard, socials, opchom, etc. Just make sure it's a real user group in Slack", false))
 		return
 	}
 	sendTS := ClientRelations[event.Channel+":"+event.ThreadTimeStamp]
