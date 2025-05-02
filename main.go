@@ -5,6 +5,7 @@ import (
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 	"github.com/slack-go/slack/socketmode"
+	"log"
 	"os"
 	"slices"
 	"strings"
@@ -51,9 +52,9 @@ func main() {
 
 	//load API accordingly
 	api := slack.New(botToken, slack.OptionAppLevelToken(appToken))
-	client := socketmode.New(api) //,
-	//	socketmode.OptionDebug(true),
-	//	socketmode.OptionLog(log.New(os.Stdout, "socketmode: ", log.Lshortfile|log.LstdFlags)))
+	client := socketmode.New(api,
+		socketmode.OptionDebug(true),
+		socketmode.OptionLog(log.New(os.Stdout, "socketmode: ", log.Lshortfile|log.LstdFlags)))
 	socketHandler := socketmode.NewSocketmodeHandler(client)
 
 	//handle Slack normal endpoints
