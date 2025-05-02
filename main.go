@@ -6,6 +6,7 @@ import (
 	"github.com/slack-go/slack/slackevents"
 	"github.com/slack-go/slack/socketmode"
 	"log"
+	"maps"
 	"os"
 	"slices"
 	"strings"
@@ -19,8 +20,11 @@ var EboardRelations = make(map[string]string)
 // [client] eboard
 var ClientRelations = make(map[string]string)
 
-// handles (mentions) of the groups
-var UserGroups = make([]string, 0)
+// [handle] id
+var UserGroups = make(map[string]string)
+
+// just handles
+var UserGroupHandles = make([]string, 0)
 
 const ThisUserID = "U08PJ68RKLN"
 
@@ -79,8 +83,9 @@ func main() {
 		return
 	}
 	for _, group := range groups {
-		UserGroups = append(UserGroups, group.Handle)
+		UserGroups[group.Handle] = group.ID
 	}
+	UserGroupHandles = slices.Collect(maps.Keys(UserGroups))
 
 	socketHandler.Handle(socketmode.EventTypeEventsAPI, handleEvents)
 
@@ -162,11 +167,11 @@ func startCommand(evt *socketmode.Event, client *socketmode.Client) {
 	index := 0
 	mentions := ""
 	for i, str := range split {
-		if !slices.Contains(UserGroups, str) {
+		if !slices.Contains(UserGroupHandles, str) {
 			index = i
 			break
 		}
-		mentions += "@" + str + " "
+		mentions += "<!subteam^" + UserGroups[str] + "> "
 	}
 
 	subject := strings.Join(split[index:], " ")
