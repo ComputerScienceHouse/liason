@@ -75,6 +75,7 @@ func main() {
 
 	groups, err := client.GetUserGroups(slack.GetUserGroupsOptionIncludeUsers(false), slack.GetUserGroupsOptionIncludeDisabled(false))
 	if err != nil {
+		log.Panicln(err)
 		return
 	}
 	for _, group := range groups {
