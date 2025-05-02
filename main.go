@@ -137,6 +137,7 @@ func handleEboard(event *slackevents.MessageEvent, client *socketmode.Client) {
 		return
 	}
 	sendData := strings.Split(eboardTS, ":")
+	client.AddReaction("circle-game", slack.ItemRef{Channel: event.Channel, Timestamp: event.TimeStamp})
 	client.SendMessage(sendData[0], slack.MsgOptionUsername("EBoard"), slack.MsgOptionTS(sendData[1]), slack.MsgOptionText(event.Text, false))
 }
 
@@ -149,11 +150,7 @@ func handleDM(event *slackevents.MessageEvent, client *socketmode.Client) {
 	if sendTS == "" {
 		return
 	}
-	err := client.AddReaction("circle-game", slack.ItemRef{Channel: event.Channel, Timestamp: event.TimeStamp})
-	if err != nil {
-		log.Println(err)
-		return
-	}
+	client.AddReaction("circle-game", slack.ItemRef{Channel: event.Channel, Timestamp: event.TimeStamp})
 	client.SendMessage(LiasonChannel, slack.MsgOptionUsername("Concerned Member"), slack.MsgOptionTS(sendTS), slack.MsgOptionText(event.Text, false))
 	//TODO: maybe hash threadTS for privacy?
 }
