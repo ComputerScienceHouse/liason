@@ -6,6 +6,7 @@ import (
 	"github.com/slack-go/slack/slackevents"
 	"github.com/slack-go/slack/socketmode"
 	"os"
+	"slices"
 	"strings"
 )
 
@@ -16,6 +17,9 @@ var EboardRelations = make(map[string]string)
 
 // [client] eboard
 var ClientRelations = make(map[string]string)
+
+// handles (mentions) of the groups
+var UserGroups = make([]string, 0)
 
 const ThisUserID = "U08PJ68RKLN"
 
@@ -68,10 +72,19 @@ func main() {
 
 	LoadRelations()
 
+	groups, err := client.GetUserGroups(slack.GetUserGroupsOptionIncludeUsers(false), slack.GetUserGroupsOptionIncludeDisabled(false))
+	if err != nil {
+		return
+	}
+	for _, group := range groups {
+		UserGroups = append(UserGroups, group.Handle)
+	}
+
 	socketHandler.Handle(socketmode.EventTypeEventsAPI, handleEvents)
 
 	socketHandler.HandleSlashCommand("/start", startCommand)
 
+	client.SetUserPresence("auto")
 	socketHandler.RunEventLoop()
 
 }
@@ -143,9 +156,21 @@ func startCommand(evt *socketmode.Event, client *socketmode.Client) {
 	if cmd.ChannelName != "directmessage" {
 		return
 	}
+	split := strings.Split(cmd.Text, " ")
+	index := 0
+	mentions := ""
+	for i, str := range split {
+		if !slices.Contains(UserGroups, str) {
+			index = i
+			break
+		}
+		mentions += "@" + str + " "
+	}
 
-	_, dmTS, _, _ := client.SendMessage(cmd.ChannelID, slack.MsgOptionText("Conversation :thread: here <@"+cmd.UserID+">", false))
-	_, ebTS, _, _ := client.SendMessage(LiasonChannel, slack.MsgOptionText("Conversation :thread: here", false))
+	subject := strings.Join(split[index:], " ")
+
+	_, dmTS, _, _ := client.SendMessage(cmd.ChannelID, slack.MsgOptionText("Conversation :thread: here <@"+cmd.UserID+"> about "+subject, false))
+	_, ebTS, _, _ := client.SendMessage(LiasonChannel, slack.MsgOptionText("New :thread: for "+mentions+": "+subject, false))
 	clientStr := cmd.ChannelID + ":" + dmTS
 	EboardRelations[ebTS] = clientStr
 	ClientRelations[clientStr] = ebTS
