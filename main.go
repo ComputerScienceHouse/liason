@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-var LiasonChannel = os.Getenv("LIASON_CHANNEL_ID")
+var LiaisonChannel = os.Getenv("LIAISON_CHANNEL_ID")
 
 // [eboard] client
 var EboardRelations = make(map[string]string)
@@ -29,8 +29,8 @@ var UserGroupHandles = make([]string, 0)
 const ThisUserID = "U08PJ68RKLN"
 
 func main() {
-	if LiasonChannel == "" {
-		fmt.Fprintf(os.Stderr, "LIASON_CHANNEL_ID must be set.\n")
+	if LiaisonChannel == "" {
+		fmt.Fprintf(os.Stderr, "LIAISON_CHANNEL_ID must be set.\n")
 		os.Exit(1)
 	}
 
@@ -124,7 +124,7 @@ func handleEvents(evt *socketmode.Event, client *socketmode.Client) {
 }
 
 func handleEboard(event *slackevents.MessageEvent, client *socketmode.Client) {
-	if event.Channel != LiasonChannel {
+	if event.Channel != LiaisonChannel {
 		fmt.Println("Messaged from a different channel?")
 		client.LeaveConversation(event.Channel)
 		return
@@ -153,7 +153,7 @@ func handleDM(event *slackevents.MessageEvent, client *socketmode.Client) {
 		return
 	}
 	client.AddReaction("circle-game", slack.ItemRef{Channel: event.Channel, Timestamp: event.TimeStamp})
-	client.SendMessage(LiasonChannel, slack.MsgOptionUsername("Concerned Member"), slack.MsgOptionTS(sendTS), slack.MsgOptionText(event.Text, false))
+	client.SendMessage(LiaisonChannel, slack.MsgOptionUsername("Concerned Member"), slack.MsgOptionTS(sendTS), slack.MsgOptionText(event.Text, false))
 	//TODO: maybe hash threadTS for privacy?
 }
 
@@ -181,7 +181,7 @@ func startCommand(evt *socketmode.Event, client *socketmode.Client) {
 	subject := strings.Join(split[index:], " ")
 
 	_, dmTS, _, _ := client.SendMessage(cmd.ChannelID, slack.MsgOptionText("Conversation :thread: here <@"+cmd.UserID+"> about "+subject, false))
-	_, ebTS, _, _ := client.SendMessage(LiasonChannel, slack.MsgOptionText("New :thread: for "+mentions+": "+subject, false))
+	_, ebTS, _, _ := client.SendMessage(LiaisonChannel, slack.MsgOptionText("New :thread: for "+mentions+": "+subject, false))
 	clientStr := cmd.ChannelID + ":" + dmTS
 	EboardRelations[ebTS] = clientStr
 	ClientRelations[clientStr] = ebTS
