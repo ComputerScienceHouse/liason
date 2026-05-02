@@ -36,4 +36,4 @@ For detailed images and
 
 ## Questions/Concerns
 
-Please file an [Issue](https://github.com/ComputerScienceHouse/pubsite/issues/new) on this repository or contact [webmaster@csh.rit.edu](mailto:webmaster@csh.rit.edu) with inquiries about the site.
+Please file an [Issue](https://github.com/ComputerScienceHouse/pubsite/issues/new) on this repository or contact E-Board or an RTP for inquiries about the bot
