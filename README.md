@@ -36,4 +36,4 @@ For detailed images and
 
 ## Questions/Concerns
 
-Please file an [Issue](https://github.com/ComputerScienceHouse/pubsite/issues/new) on this repository or contact E-Board or an RTP for inquiries about the bot
+Please file an [Issue](https://github.com/ComputerScienceHouse/liason/issues/new) on this repository or contact E-Board or an RTP for inquiries about the bot
